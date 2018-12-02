@@ -1,48 +1,82 @@
-#include<iostream>
 #include<cstdio>
-#include<cstring>
+#include<vector>
 using namespace std;
-
-int main()
-{
-    int N;
-    cin >> N;
-    while(N--)
-    {
-        int n,m,t;
-        cin >> n >> m >> t;
-        int val1,val2;
-        val1=2*n,val2=2*m;
-        int coe[100]={0};
-        int ar1[val1],ar2[val2];
-        int i,j,k=0;
-        for(i=0;i<val1;i++) cin >> ar1[i];
-        for(j=0;i<val2;j++) cin >> ar2[j];
-        int t1,t2;
-        t1=strlen((char*)ar1),t2=strlen((char*)ar2);
-        if(!t){
-        if(t1>=t2)
-        {
-            for(i=1;i<val2;i+=2)
-                for(j=1;j<val1;j+=2)
-                {
-                    if(ar1[j]==ar2[i]){
-                    coe[j-1]=ar1[j-1]+ar2[i-1];
-                    }
-                }
-        }
-        else
-        {
-            for(i=1;i<val1;i+=2)
-                for(j=1;j<val2;j+=2)
-                {
-                    if(ar1[j]==ar2[i]){
-                    coe[i-1]=ar1[j-1]+ar2[i-1];
-                    }
-                }
+int cnt[100],index_[100];
+void swap(int &a,int &b){
+    a=a^b;b=a^b;a=a^b;
+}
+int main() {
+    int T;scanf("%d", &T);
+    while (T--) {
+        int m,n,s;
+        scanf("%d %d %d", &m, &n, &s);
+        for (int i = 0; i < m; i++)
+            scanf("%d %d", &cnt[i], &index_[i]);
+        for (int i = m; i < m + n; i++) 
+            scanf("%d %d", &cnt[i], &index_[i]);
+        if (s) {
+            for(int i=m;i<m+n;i++)
+                cnt[i] = -cnt[i];
         }
         
+        for (int i = 0; i < m + n; i++)
+            for (int j = 0; j < m + n; j++) 
+                if (index_[i] < index_[j]) {
+                    swap(index_[i],index_[j]);
+                    swap(cnt[i],cnt[j]);
+                }
+        int i = 0,o=m+n;
+        while (i < o-1) {
+            if (index_[i] == index_[i + 1]) {
+                for (int j = i; j < o-1; j++)
+                    index_[j] = index_[j + 1];
+                cnt[i] = cnt[i] + cnt[i + 1];
+                for (int j = i + 1; j < o - 1; j++)
+                    cnt[j] = cnt[j + 1];
+                o--;
+            }
+            else
+                i++;
+        }
+        if (cnt[0] != 0 && cnt[0] != 1 && cnt[0] != -1 && index_[0] != 1 && index_[0] != 0)
+            printf("%dx^%d", cnt[0], index_[0]);
+        if (cnt[0] != 0 && cnt[0] != 1 && cnt[0] != -1 && index_[0] == 1)
+            printf("%dx", cnt[0]);
+        if (cnt[0] == 1 && index_[0] != 0 && index_[0] != 1)
+            printf("x^%d", index_[0]);
+        if (cnt[0] == 1 && index_[0] == 1)
+            printf("x");
+        if (cnt[0] == -1 && index_[0] == 1)
+            printf("-x");
+        if (cnt[0] == -1 && index_[0] != 0 && index_[0] != 1)
+            printf("-x^%d", index_[0]);
+        if (cnt[0] != 0 && index_[0] == 0)
+            printf("1");
+        for (i = 1; i < o; i++) {
+            if(cnt[i]==1){
+                if(index_[i]!=1){
+                    if(index_[i]!=0)
+                        printf("+x^%d", index_[i]);
+                }
+                else printf("+x");
+            }
+            if (cnt[i] == -1 && index_[i] == 1)
+                printf("-x");
+            if (cnt[i] == -1 && index_[i] != 1 && index_[i] != 0)
+                printf("-x^%d", index_[i]);
+            if (cnt[i] != 1 && cnt[i] != 0 && cnt[i] != -1 && index_[i] != 1 && index_[i] != 0) {
+                if(cnt[i]>=0)printf("+");
+                printf("%dx^%d", cnt[i], index_[i]);
+            }
+            if (cnt[i] != 1 && cnt[i] != 0 && cnt[i] != -1 && index_[i] == 1) {
+                if(cnt[i]>=0)printf("+");
+                printf("%dx", cnt[i]);
+            }
+            if (cnt[i] != 0 && index_[i] == 0)
+                printf("1");
+        }
+        printf("\n");
     }
-    }
-    return 0;
 }
+
+
